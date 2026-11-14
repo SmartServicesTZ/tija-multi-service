@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function own(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /admins/{uid} {
+      allow read: if own(uid) || isAdmin();
+      allow write: if false; // Create the first admin record only from Firebase Console.
+    }
+    match /users/{uid} {
+      allow create: if own(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.role in ['CUSTOMER','AGENT']
+        && request.resource.data.status == (request.resource.data.role == 'AGENT' ? 'PENDING_APPROVAL' : 'ACTIVE')
+        && request.resource.data.keys().hasOnly(['uid','firstName','lastName','fullName','phone','role','status','createdAt']);
+      allow read: if own(uid) || isAdmin();
+      allow update: if isAdmin() || (own(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName','lastName','fullName','phone']));
+      allow delete: if isAdmin();
+    }
+    match /serviceRequests/{requestId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'PENDING'
+        && request.resource.data.keys().hasOnly(['userId','service','status','createdAt']);
+      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+  }
+}
