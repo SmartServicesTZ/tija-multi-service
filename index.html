@@ -29,7 +29,38 @@ const alias=p=>p.replace(/\D/g,"")+"@accounts.tija.local";
 function openAuth(m){mode=m;$("authModal").classList.remove("hidden");$("authTitle").textContent=m==="login"?"Ingia kwenye akaunti":"Fungua akaunti";$("authMessage").innerHTML="";if(m==="register"){$("authFields").innerHTML='<label>Jina la kwanza</label><input name="first" required><label>Jina la mwisho</label><input name="last" required><label>Namba ya simu</label><input name="phone" inputmode="tel" placeholder="07XXXXXXXX" required><label>Nenosiri (angalau herufi/namba 6)</label><input name="password" type="password" minlength="6" required><label>Thibitisha nenosiri</label><input name="confirm" type="password" minlength="6" required>';}else{$("authFields").innerHTML='<label>Namba ya simu</label><input name="phone" inputmode="tel" placeholder="07XXXXXXXX" required><label>Nenosiri</label><input name="password" type="password" required>';} $("authSubmit").textContent=m==="login"?"Ingia":"Jisajili";$("authSwitch").innerHTML=m==="login"?'Huna akaunti? <a id="switch">Jisajili</a>':'Una akaunti? <a id="switch">Ingia</a>';document.getElementById("switch").onclick=()=>openAuth(m==="login"?"register":"login");}
 function say(t,k="error"){$("authMessage").innerHTML='<div class="'+k+'">'+t+'</div>';}
 function phoneValid(p){const digits=p.replace(/\D/g,"");const n=digits.startsWith("0")?"255"+digits.slice(1):digits;if(!/^255[67]\d{8}$/.test(n))throw Error("Weka namba sahihi ya Tanzania, mfano 07XXXXXXXX au +2557XXXXXXXX.");return n;}
-$("authForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.currentTarget);$("authSubmit").disabled=true;try{const phone=phoneValid(String(f.get("phone"))),email=alias(phone),password=String(f.get("password"));if(mode==="register"){const first=String(f.get("first")).trim(),last=String(f.get("last")).trim(),role="CUSTOMER";if(!first||!last)throw Error("Jaza jina la kwanza na la mwisho.");if(password!==f.get("confirm"))throw Error("Nenosiri halifanani.");const cred=await createUserWithEmailAndPassword(auth,email,password);try{await setDoc(doc(db,"users",cred.user.uid),{uid:cred.user.uid,firstName:first,lastName:last,fullName:first+" "+last,phone,role,status:"ACTIVE",createdAt:serverTimestamp()});}catch(profileError){await deleteUser(cred.user);throw profileError;}$("authModal").classList.add("hidden");await showDashboard(cred.user);toast("Umefanikiwa kujisajili. Karibu TIJA!");}else{await signInWithEmailAndPassword(auth,email,password);$("authModal").classList.add("hidden");}}catch(err){const msgs={"auth/email-already-in-use":"Namba hii imesajiliwa tayari.","auth/invalid-credential":"Namba au nenosiri si sahihi.","auth/operation-not-allowed":"Washa Email/Password kwenye Firebase Authentication.","auth/weak-password":"Nenosiri ni dhaifu."};say(msgs[err.code]||err.message||"Imeshindikana.");}finally{$("authSubmit").disabled=false;}});
+$("authForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const f=new FormData(e.currentTarget);
+  $("authSubmit").disabled=true;
+  try{
+    const phone=phoneValid(String(f.get("phone")));
+    const email=alias(phone);
+    const password=String(f.get("password"));
+    if(mode==="register"){
+      const first=String(f.get("first")).trim(),last=String(f.get("last")).trim();
+      if(!first||!last)throw Error("Jaza jina la kwanza na la mwisho.");
+      if(password!==f.get("confirm"))throw Error("Nenosiri halifanani.");
+      registrationInProgress=true;
+      const cred=await createUserWithEmailAndPassword(auth,email,password);
+      try{
+        await setDoc(doc(db,"users",cred.user.uid),{uid:cred.user.uid,firstName:first,lastName:last,fullName:first+" "+last,phone,role:"CUSTOMER",status:"ACTIVE",createdAt:serverTimestamp()});
+      }catch(profileError){try{await deleteUser(cred.user);}catch(cleanupError){}throw profileError;}
+      profile=null;renderedUid=null;
+      $("authModal").classList.add("hidden");
+      await showDashboard(cred.user);
+      renderedUid=cred.user.uid;
+      toast("Umefanikiwa kujisajili. Umeingia TIJA moja kwa moja.");
+    }else{
+      await signInWithEmailAndPassword(auth,email,password);
+      $("authModal").classList.add("hidden");
+    }
+  }catch(err){
+    registrationInProgress=false;
+    const msgs={"auth/email-already-in-use":"Namba hii imesajiliwa tayari. Tumia sehemu ya Ingia.","auth/invalid-credential":"Namba au nenosiri si sahihi.","auth/operation-not-allowed":"Washa Email/Password kwenye Firebase Authentication.","auth/weak-password":"Nenosiri ni dhaifu."};
+    say(msgs[err.code]||err.message||"Imeshindikana.");
+  }finally{registrationInProgress=false;$("authSubmit").disabled=false;}
+});
 async function loadRequests(uid){const s=await getDocs(query(collection(db,"serviceRequests"),where("userId","==",uid)));$("requestCount").textContent=s.size;$("requestsList").innerHTML=s.docs.map(d=>'<div class="requestRow"><b>'+d.data().service+'</b><span class="status">'+d.data().status+'</span></div>').join("");$("requestsText").textContent=s.empty?"Bado hujatuma ombi la huduma.":"Maombi yako:";}
 function setView(id){document.querySelectorAll(".appView").forEach(v=>v.classList.toggle("hidden",v.id!==id));document.querySelectorAll(".sideLink").forEach(v=>v.classList.toggle("active",v.dataset.view===id));$("topPageTitle").textContent=({homeView:"Dashboard",servicesView:"Huduma zote",accountView:"Taarifa za akaunti",requestsView:"Maombi yangu"})[id];$("dashboard").classList.remove("menuOpen");}
 async function showDashboard(u){let p=profile;if(!p){const a=await getDoc(doc(db,"admins",u.uid));if(a.exists())p={...a.data(),uid:u.uid,role:"ADMIN",status:"ACTIVE",firstName:a.data().firstName||"ADMIN",fullName:a.data().fullName||a.data().name||"ADMIN",phone:a.data().phone||"—"};else{const d=await getDoc(doc(db,"users",u.uid));if(!d.exists())throw Error("Wasifu wa akaunti haupo.");p=d.data();}}profile=p;$("publicView").classList.add("hidden");document.body.classList.add("signedIn");$("dashboard").classList.remove("hidden");$("welcome").textContent="Karibu, "+(p.firstName||p.fullName||"mteja");$("roleLabel").textContent=p.role||"CUSTOMER";$("sideRole").textContent=p.role||"CUSTOMER";$("sideName").textContent=p.fullName||p.firstName||"Mtumiaji";$("profileName").textContent=p.fullName||((p.firstName||"")+" "+(p.lastName||""));$("accountName").textContent=$("profileName").textContent;$("profilePhone").textContent=p.phone||"—";const st=p.status==="PENDING_APPROVAL"?"Inasubiri idhini":p.status==="APPROVED"?"Imeidhinishwa":"Hai";$("profileStatus").textContent=st;$("accountStatus").textContent=st;$("accountRole").textContent=p.role||"CUSTOMER";await loadRequests(u.uid);setView("homeView");}
@@ -63,7 +94,30 @@ function endPull(){
 window.addEventListener("touchend",endPull,{passive:true});
 window.addEventListener("touchcancel",endPull,{passive:true});
 
-["loginBtn","heroLogin"].forEach(id=>$(id).onclick=()=>openAuth("login"));["registerBtn","heroRegister","panelRegister"].forEach(id=>$(id).onclick=()=>openAuth("register"));$("closeAuth").onclick=()=> $("authModal").classList.add("hidden");$("logoutBtn").onclick=()=>signOut(auth);
-onAuthStateChanged(auth,async u=>{if(!u){$("publicView").classList.remove("hidden");document.body.classList.remove("signedIn");$("dashboard").classList.add("hidden");profile=null;return;}try{await showDashboard(u);}catch(e){toast(e.message);}});$("dashboard").classList.add("hidden");profile=null;return;}try{const adminSnap=await getDoc(doc(db,"admins",u.uid));if(adminSnap.exists()){profile={...adminSnap.data(),uid:u.uid,role:"ADMIN",status:"ACTIVE",firstName:adminSnap.data().firstName||adminSnap.data().fullName||"ADMIN",fullName:adminSnap.data().fullName||adminSnap.data().name||"ADMIN",phone:adminSnap.data().phone||"—"};}else{const d=await getDoc(doc(db,"users",u.uid));if(!d.exists())throw Error("Wasifu wa akaunti haupo. Akaunti hii haijaidhinishwa kama ADMIN.");profile=d.data();}$("publicView").classList.add("hidden");$("dashboard").classList.remove("hidden");$("welcome").textContent="Karibu, "+profile.firstName;$("roleLabel").textContent=profile.role;$("profileName").textContent=profile.fullName;$("profilePhone").textContent=profile.phone;$("profileStatus").textContent=profile.status==="PENDING_APPROVAL"?"Inasubiri idhini":profile.status==="APPROVED"?"Imeidhinishwa":"Hai";await loadRequests(u.uid);}catch(e){toast(e.message);}});
-function toast(t){$("toast").textContent=t;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),3500);}
+let registrationInProgress=false;
+let renderedUid=null;
+["loginBtn","heroLogin"].forEach(id=>$(id).onclick=()=>openAuth("login"));
+["registerBtn","heroRegister","panelRegister"].forEach(id=>$(id).onclick=()=>openAuth("register"));
+$("closeAuth").onclick=()=> $("authModal").classList.add("hidden");
+$("logoutBtn").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,async u=>{
+  if(!u){
+    renderedUid=null;profile=null;
+    $("publicView").classList.remove("hidden");
+    document.body.classList.remove("signedIn");
+    $("dashboard").classList.add("hidden");
+    $("dashboard").classList.remove("menuOpen");
+    return;
+  }
+  if(registrationInProgress||renderedUid===u.uid)return;
+  try{await showDashboard(u);renderedUid=u.uid;}
+  catch(e){toast(e.message||"Imeshindikana kufungua akaunti.");}
+});
+$("dashboard").classList.add("hidden");
+profile=null;
+function toast(t){
+  $("toast").textContent=t;
+  $("toast").classList.remove("hidden");
+  setTimeout(()=>$("toast").classList.add("hidden"),3500);
+}
 </script></body></html>
