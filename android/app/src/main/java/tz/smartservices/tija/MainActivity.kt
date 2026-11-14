@@ -17,7 +17,6 @@ import android.widget.TextView
 import android.widget.LinearLayout
 import android.view.Gravity
 import android.content.Intent
-import android.net.Uri
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
@@ -58,7 +57,10 @@ class MainActivity : Activity() {
                 gravity = Gravity.CENTER
                 setPadding(30, 18, 30, 18)
                 setBackgroundColor(Color.rgb(36, 91, 214))
-                setOnClickListener { visibility = View.GONE; webView.loadUrl(HOME_URL) }
+                setOnClickListener {
+                    visibility = View.GONE
+                    loadLatestTija()
+                }
             })
         }
 
@@ -108,8 +110,15 @@ class MainActivity : Activity() {
         ))
         setContentView(root)
 
-        if (savedInstanceState == null) webView.loadUrl(HOME_URL)
+        if (savedInstanceState == null) loadLatestTija()
         else webView.restoreState(savedInstanceState)
+    }
+
+    // Refresh web assets on a fresh app launch without clearing Firebase cookies or local storage.
+    private fun loadLatestTija() {
+        webView.clearCache(true)
+        webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+        webView.loadUrl(HOME_URL)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
