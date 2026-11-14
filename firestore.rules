@@ -1,38 +1,60 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
-    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
-    function own(uid) { return signedIn() && request.auth.uid == uid; }
-    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
-    function canRequestService() {
-      return signedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && profile().role == 'CUSTOMER' && profile().status == 'ACTIVE';
-    }
-
-    match /admins/{uid} {
-      allow read: if own(uid) || isAdmin();
-      allow write: if false; // Bootstrap the first admin only in Firebase Console.
-    }
-    match /users/{uid} {
-      allow create: if own(uid)
-        && request.resource.data.uid == uid
-        && request.resource.data.role == 'CUSTOMER'
-        && request.resource.data.status == 'ACTIVE'
-        && request.resource.data.keys().hasOnly(['uid','firstName','lastName','fullName','phone','role','status','createdAt']);
-      allow read: if own(uid) || isAdmin();
-      allow update: if isAdmin() || (own(uid)
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName','lastName','fullName','phone']));
-      allow delete: if isAdmin();
-    }
-    match /serviceRequests/{requestId} {
-      allow create: if canRequestService()
-        && request.resource.data.userId == request.auth.uid
-        && request.resource.data.status == 'PENDING'
-        && request.resource.data.keys().hasOnly(['userId','service','status','createdAt']);
-      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow update, delete: if isAdmin();
-    }
+ match /databases/{database}/documents {
+  function signedIn(){return request.auth != null;}
+  function isAdmin(){return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));}
+  function own(uid){return signedIn() && request.auth.uid==uid;}
+  function userPath(uid){return /databases/$(database)/documents/users/$(uid);}
+  function activeCustomer(){return signedIn() && exists(userPath(request.auth.uid)) && get(userPath(request.auth.uid)).data.role=='CUSTOMER' && get(userPath(request.auth.uid)).data.status=='ACTIVE';}
+  match /admins/{uid}{
+   allow read: if own(uid)||isAdmin();
+   allow write: if false;
   }
+  match /users/{uid}{
+   allow create: if own(uid)
+    && request.resource.data.uid==uid
+    && request.resource.data.role=='CUSTOMER'
+    && request.resource.data.status=='ACTIVE'
+    && request.resource.data.tokenBalance==0
+    && request.resource.data.keys().hasOnly(['uid','firstName','lastName','fullName','phone','role','status','tokenBalance','createdAt']);
+   allow read: if own(uid)||isAdmin();
+   allow update: if isAdmin() || (own(uid) && (
+    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName','lastName','fullName','phone'])
+    || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tokenBalance'])
+      && resource.data.status=='ACTIVE'
+      && request.resource.data.tokenBalance==resource.data.tokenBalance-3
+      && request.resource.data.tokenBalance>=0)
+   ));
+   allow delete: if isAdmin();
+  }
+  match /serviceRequests/{rid}{
+   allow create: if activeCustomer()
+    && request.resource.data.userId==request.auth.uid
+    && request.resource.data.status=='PENDING'
+    && request.resource.data.tokenCost==3
+    && request.resource.data.keys().hasOnly(['userId','service','status','tokenCost','createdAt'])
+    && getAfter(userPath(request.auth.uid)).data.tokenBalance==get(userPath(request.auth.uid)).data.tokenBalance-3;
+   allow read: if signedIn()&&(resource.data.userId==request.auth.uid||isAdmin());
+   allow update,delete: if isAdmin();
+  }
+  match /topupRequests/{tid}{
+   allow create: if signedIn()
+    && request.resource.data.userId==request.auth.uid
+    && request.resource.data.status=='PENDING'
+    && ((request.resource.data.tokens==3&&request.resource.data.amount==500)||(request.resource.data.tokens==6&&request.resource.data.amount==1000))
+    && request.resource.data.keys().hasOnly(['userId','phone','tokens','amount','status','createdAt']);
+   allow read: if signedIn()&&(resource.data.userId==request.auth.uid||isAdmin());
+   allow update,delete: if isAdmin();
+  }
+  match /tokenTransactions/{tid}{
+   allow read: if signedIn()&&(resource.data.userId==request.auth.uid||isAdmin());
+   allow create: if isAdmin() || (signedIn()
+    && request.resource.data.userId==request.auth.uid
+    && request.resource.data.type=='SERVICE_PAYMENT'
+    && request.resource.data.amount==-3
+    && existsAfter(/databases/$(database)/documents/serviceRequests/$(request.resource.data.requestId))
+    && getAfter(/databases/$(database)/documents/serviceRequests/$(request.resource.data.requestId)).data.userId==request.auth.uid);
+   allow update,delete: if isAdmin();
+  }
+ }
 }
