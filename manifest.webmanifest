@@ -1,0 +1,10 @@
+{
+  "name": "TIJA Multi Service",
+  "short_name": "TIJA",
+  "description": "Huduma Bora, Maisha Rahisi",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f8fe",
+  "theme_color": "#071b45",
+  "icons": [{"src":"./assets/favicon.png","sizes":"192x192","type":"image/png"}]
+}
