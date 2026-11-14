@@ -8,8 +8,7 @@ service cloud.firestore {
     function canRequestService() {
       return signedIn()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && (profile().role == 'CUSTOMER' && profile().status == 'ACTIVE'
-          || profile().role == 'AGENT' && profile().status == 'APPROVED');
+        && profile().role == 'CUSTOMER' && profile().status == 'ACTIVE';
     }
 
     match /admins/{uid} {
