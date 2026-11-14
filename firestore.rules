@@ -4,10 +4,17 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
     function own(uid) { return signedIn() && request.auth.uid == uid; }
+    function profile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function canRequestService() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (profile().role == 'CUSTOMER' && profile().status == 'ACTIVE'
+          || profile().role == 'AGENT' && profile().status == 'APPROVED');
+    }
 
     match /admins/{uid} {
       allow read: if own(uid) || isAdmin();
-      allow write: if false; // Create the first admin record only from Firebase Console.
+      allow write: if false; // Bootstrap the first admin only in Firebase Console.
     }
     match /users/{uid} {
       allow create: if own(uid)
@@ -21,7 +28,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     match /serviceRequests/{requestId} {
-      allow create: if signedIn()
+      allow create: if canRequestService()
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.status == 'PENDING'
         && request.resource.data.keys().hasOnly(['userId','service','status','createdAt']);
