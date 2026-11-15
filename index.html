@@ -14,9 +14,94 @@ body.signedIn>header{display:none}body.signedIn header .navActions{display:none}
 .adminAction{padding:7px 10px;font-size:11px;margin:2px}.adminSection{overflow:auto;margin-top:16px}
 @media(max-width:650px){.adminGrid{grid-template-columns:1fr 1fr}.adminTable{min-width:620px}}@media(max-width:760px){.appShell{display:block}.sideNav{position:fixed;z-index:12;left:0;top:0;bottom:0;width:275px;min-height:100dvh;transform:translateX(-110%);transition:transform .2s}.appShell.menuOpen .sideNav{transform:translateX(0)}.sideShade{display:none;position:fixed;inset:0;background:#071b4566;z-index:11}.appShell.menuOpen .sideShade{display:block}.menuToggle{display:block}.appContent{padding:18px 14px}.appTop{padding:0 14px}.quickStats{grid-template-columns:1fr}}
 /* TIJA ADMIN DASHBOARD REBUILD */
-#adminView{max-width:1440px;margin:0 auto}.adminHeader{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:10px 0 24px}.adminHeader h1{font-size:clamp(27px,4vw,38px);letter-spacing:-1.2px;margin:7px 0}.adminHeader p,.adminWelcome p,.adminPanelHead p{color:#718096;font-size:13px;margin:5px 0 0;line-height:1.6}.adminKicker{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#64748b}.adminRefreshBtn{background:#172b4d;color:#fff;white-space:nowrap}.adminTabs{display:flex;gap:7px;overflow:auto;padding:8px;background:#eaf0f8;border-radius:15px;margin-bottom:20px}.adminTab{background:transparent;color:#5c6b82;white-space:nowrap;padding:11px 15px;font-size:12px}.adminTab.active{background:#fff;color:#1557c0;box-shadow:0 3px 12px #152b4d12}.adminMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.adminMetric{background:#fff;border:1px solid #e5ebf3;border-radius:17px;padding:19px;box-shadow:0 7px 22px #172b4d08}.adminMetric span,.adminMetric small{display:block;color:#718096;font-size:12px}.adminMetric b{display:block;font-size:30px;letter-spacing:-1px;margin:9px 0 4px;color:#172b4d}.adminWelcome{background:linear-gradient(110deg,#142b4d,#234f83);border-radius:19px;padding:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0}.adminWelcome .adminKicker{color:#b9d3f6}.adminWelcome h2{font-size:21px;margin:8px 0}.adminWelcome p{color:#d6e3f3;max-width:650px}.adminPrice{width:92px;height:92px;flex:none;border-radius:50%;background:#ffffff16;border:1px solid #ffffff40;display:flex;flex-direction:column;align-items:center;justify-content:center}.adminPrice b{font-size:28px}.adminPrice span{font-size:8px;letter-spacing:1px}.adminSplit{display:grid;grid-template-columns:1fr 1fr;gap:15px}.adminPanel{background:#fff;border:1px solid #e5ebf3;border-radius:17px;padding:19px;min-width:0;box-shadow:0 7px 22px #172b4d08}.adminPanelHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.adminPanelHead h2,.adminPanelHead h3{margin:0;font-size:17px;color:#172b4d}.adminTextBtn{background:#eef4ff;color:#1756b8;font-size:11px;padding:9px 12px;white-space:nowrap}.adminSearch{width:100%;max-width:420px;border:1px solid #dce4ef;border-radius:11px;padding:12px 14px;margin:0 0 15px;outline:none}.adminSearch:focus{border-color:#3476d8;box-shadow:0 0 0 3px #3476d81c}.adminTable{width:100%;border-collapse:collapse;font-size:12px;min-width:550px}.adminTable th{background:#f6f8fb;color:#728096;font-size:10px;letter-spacing:.5px;text-transform:uppercase}.adminTable th,.adminTable td{text-align:left;padding:13px 10px;border-bottom:1px solid #edf1f6;vertical-align:middle}.adminTable tr:last-child td{border-bottom:0}.adminSection,.adminPanel>div[id]{overflow:auto}.adminAction{padding:8px 10px;font-size:10px;border-radius:8px;margin:2px}.adminLoadError{background:#fff4e8;color:#8b4a0a;border:1px solid #f4d4ad;padding:13px 15px;border-radius:12px;font-size:12px;margin:10px 0}.adminEmpty{padding:22px;text-align:center;color:#8793a5;font-size:13px}.adminStatus{display:inline-block;padding:5px 8px;border-radius:30px;background:#edf3ff;color:#28599a;font-size:10px;font-weight:800}.adminPane{min-width:0}.adminPane.hidden{display:none!important}
+#adminView{max-width:1440px;margin:0 auto}.adminHeader{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:10px 0 24px}.adminHeader h1{font-size:clamp(27px,4vw,38px);letter-spacing:-1.2px;margin:7px 0}.adminHeader p,.adminWelcome p,.adminPanelHead p{color:#718096;font-size:13px;margin:5px 0 0;line-height:1.6}.adminKicker{font-size:10px;font-weight:900;letter-spacing:1.8px;color:#64748b}.adminRefreshBtn{background:#172b4d;color:#fff;white-space:nowrap}.adminTabs{display:flex;gap:7px;overflow:auto;padding:8px;background:#eaf0f8;border-radius:15px;margin-bottom:20px}.adminTab{background:transparent;color:#5c6b82;white-space:nowrap;padding:11px 15px;font-size:12px}.adminTab.active{background:#fff;color:#1557c0;box-shadow:0 3px 12px #152b4d12}.adminMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.adminMetric{background:#fff;border:1px solid #e5ebf3;border-radius:17px;padding:19px;box-shadow:0 7px 22px #172b4d08}.adminMetric span,.adminMetric small{display:block;color:#718096;font-size:12px}.adminMetric b{display:block;font-size:30px;letter-spacing:-1px;margin:9px 0 4px;color:#172b4d}.adminWelcome{background:linear-gradient(110deg,#142b4d,#234f83);border-radius:19px;padding:24px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0}.adminWelcome .adminKicker{color:#dceaff;background:#ffffff16;padding:5px 8px}.adminWelcome h2{font-size:21px;margin:8px 0}.adminWelcome p{color:#d6e3f3;max-width:650px}.adminPrice{width:92px;height:92px;flex:none;border-radius:50%;background:#ffffff16;border:1px solid #ffffff40;display:flex;flex-direction:column;align-items:center;justify-content:center}.adminPrice b{font-size:28px}.adminPrice span{font-size:8px;letter-spacing:1px}.adminSplit{display:grid;grid-template-columns:1fr 1fr;gap:15px}.adminPanel{background:#fff;border:1px solid #e5ebf3;border-radius:17px;padding:19px;min-width:0;box-shadow:0 7px 22px #172b4d08}.adminPanelHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.adminPanelHead h2,.adminPanelHead h3{margin:0;font-size:17px;color:#172b4d}.adminTextBtn{background:#eef4ff;color:#1756b8;font-size:11px;padding:9px 12px;white-space:nowrap}.adminSearch{width:100%;max-width:420px;border:1px solid #dce4ef;border-radius:11px;padding:12px 14px;margin:0 0 15px;outline:none}.adminSearch:focus{border-color:#3476d8;box-shadow:0 0 0 3px #3476d81c}.adminTable{width:100%;border-collapse:collapse;font-size:12px;min-width:550px}.adminTable th{background:#f6f8fb;color:#728096;font-size:10px;letter-spacing:.5px;text-transform:uppercase}.adminTable th,.adminTable td{text-align:left;padding:13px 10px;border-bottom:1px solid #edf1f6;vertical-align:middle}.adminTable tr:last-child td{border-bottom:0}.adminSection,.adminPanel>div[id]{overflow:auto}.adminAction{padding:8px 10px;font-size:10px;border-radius:8px;margin:2px}.adminLoadError{background:#fff4e8;color:#8b4a0a;border:1px solid #f4d4ad;padding:13px 15px;border-radius:12px;font-size:12px;margin:10px 0}.adminEmpty{padding:22px;text-align:center;color:#8793a5;font-size:13px}.adminStatus{display:inline-block;padding:5px 8px;border-radius:30px;background:#edf3ff;color:#28599a;font-size:10px;font-weight:800}.adminPane{min-width:0}.adminPane.hidden{display:none!important}
 @media(max-width:900px){.adminMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.adminSplit{grid-template-columns:1fr}}
 @media(max-width:520px){.adminHeader{align-items:flex-start;flex-direction:column}.adminRefreshBtn{width:100%}.adminWelcome{padding:19px}.adminPrice{width:72px;height:72px}.adminPrice b{font-size:23px}.adminMetrics{gap:9px}.adminMetric{padding:14px}.adminMetric b{font-size:25px}.adminTabs{margin-left:-4px;margin-right:-4px}.adminPanel{padding:14px}.adminPanelHead h2,.adminPanelHead h3{font-size:15px}}
+
+/* Admin Dashboard: refined desktop and phone-first responsive layout */
+#adminView{width:100%;max-width:1320px;margin:0 auto;padding-bottom:24px}
+.adminHeader{background:linear-gradient(135deg,#fff 0%,#f6f9ff 100%);border:1px solid #e3eaf5;border-radius:20px;padding:22px 24px;margin:2px 0 18px;box-shadow:0 10px 28px rgba(7,27,69,.06)}
+.adminKicker{display:inline-flex;align-items:center;gap:8px;background:#edf4ff;color:#1556c0;padding:7px 10px;border-radius:999px;letter-spacing:1.3px}
+.adminKicker:before{content:"";width:7px;height:7px;border-radius:50%;background:#f7bd22;box-shadow:0 0 0 3px #f7bd2230}
+.adminHeader h1{font-size:clamp(28px,3vw,38px);line-height:1.12;letter-spacing:-1.2px;margin:12px 0 5px;color:#10264b}
+.adminHeader p{max-width:58ch}
+.adminRefreshBtn{min-height:46px;background:linear-gradient(135deg,#1456d8,#2472e4);box-shadow:0 8px 18px #1456d82b;border-radius:12px}
+.adminTabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;overflow:visible;padding:0;background:transparent;margin:16px 0 20px}
+.adminTab{min-height:48px;border:1px solid #e0e8f4;border-radius:13px;background:#fff;color:#53647e;display:flex;align-items:center;justify-content:center;padding:10px 12px;font-size:12px;font-weight:800;box-shadow:0 3px 10px #071b4508;transition:background .18s,border-color .18s,color .18s,transform .18s}
+.adminTab:hover{border-color:#bdd4f8;background:#f9fbff;transform:translateY(-1px)}
+.adminTab.active{background:#edf4ff;border-color:#b7d0f7;color:#1456c0;box-shadow:inset 0 0 0 1px #d9e8ff}
+.adminMetrics{gap:12px;margin:0 0 16px}
+.adminMetric{position:relative;overflow:hidden;border-radius:18px;padding:18px 20px;box-shadow:0 7px 22px rgba(7,27,69,.055)}
+.adminMetric:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#1456d8}
+.adminMetric:nth-child(2):before{background:#36a38a}.adminMetric:nth-child(3):before{background:#f0ad2e}.adminMetric:nth-child(4):before{background:#7985df}
+.adminMetric span{font-weight:750;color:#5d6f89}.adminMetric small{line-height:1.4}
+.adminMetric b{font-size:clamp(25px,3vw,31px);color:#10264b}
+.adminWelcome{position:relative;overflow:hidden;background:linear-gradient(115deg,#0d2348 0%,#1a477a 100%);border:1px solid #254c7b;border-radius:19px;padding:22px 24px;min-height:126px;box-shadow:0 10px 24px #071b4515}
+.adminWelcome:after{content:"";position:absolute;width:190px;height:190px;border:1px solid #ffffff18;border-radius:50%;right:58px;top:-102px;pointer-events:none}
+.adminWelcome h2{font-size:21px;letter-spacing:-.3px}
+.adminWelcome p{max-width:62ch}
+.adminPrice{background:#ffffff14;border-color:#ffffff48;color:#fff}
+.adminSplit{gap:14px;align-items:start}
+.adminPanel{border-color:#e2eaf5;border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(7,27,69,.055)}
+.adminPanelHead{align-items:center}
+.adminPanelHead h2,.adminPanelHead h3{letter-spacing:-.2px}
+.adminSearch{min-height:46px;font-size:14px}
+.adminSection,.adminPanel>div[id]{min-width:0;overflow:auto;border-radius:12px}
+.adminTable{min-width:560px;border-collapse:separate;border-spacing:0;font-size:12px}
+.adminTable th{position:sticky;top:0;z-index:1}
+.adminTable td{overflow-wrap:anywhere}
+.adminTable tr:hover td{background:#fbfdff}
+.adminStatus{white-space:nowrap}
+.adminAction{min-height:38px}
+.adminEmpty{background:#f8faff;border:1px dashed #dce5f1;border-radius:13px;margin-top:8px}
+@media(max-width:900px){
+ .adminTabs{display:flex;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;padding:2px 1px 7px;scroll-snap-type:x proximity}
+ .adminTabs::-webkit-scrollbar{display:none}.adminTab{flex:0 0 auto;scroll-snap-align:start}
+ .adminMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .adminSplit{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ #adminView{padding-bottom:12px}
+ .adminHeader{flex-direction:column;align-items:stretch;gap:12px;padding:16px;border-radius:17px;margin-bottom:14px}
+ .adminHeader h1{font-size:27px;margin-top:10px}
+ .adminHeader p{font-size:12px;line-height:1.5}
+ .adminRefreshBtn{width:100%;min-height:48px}
+ .adminTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;gap:7px;margin:12px 0 15px;padding:0;scroll-snap-type:none}
+ .adminTab{flex:initial;min-width:0;white-space:normal;text-align:center;justify-content:center;min-height:46px;padding:9px 8px;font-size:10.5px;line-height:1.25;border-radius:12px;scroll-snap-align:none}
+ .adminTab:last-child{grid-column:1/-1}
+ .adminMetrics{gap:8px;margin-bottom:12px}
+ .adminMetric{min-height:101px;padding:13px 12px;border-radius:15px}
+ .adminMetric span{font-size:10.5px;line-height:1.35}
+ .adminMetric small{font-size:10px}
+ .adminMetric b{font-size:24px;margin:7px 0 2px}
+ .adminWelcome{padding:16px;min-height:118px;margin:12px 0;border-radius:16px;gap:8px}
+ .adminWelcome>div:first-child{max-width:calc(100% - 66px)}
+ .adminWelcome h2{font-size:17px;line-height:1.25;margin:7px 0 5px}
+ .adminWelcome p{font-size:11px;line-height:1.45}
+ .adminWelcome .adminKicker{font-size:9px;letter-spacing:1px}
+ .adminPrice{width:60px;height:60px;position:absolute;right:14px;top:16px}
+ .adminPrice b{font-size:21px}.adminPrice span{font-size:7px}
+ .adminPanel{padding:13px;border-radius:15px}
+ .adminPanelHead{align-items:flex-start;gap:9px;margin-bottom:12px}
+ .adminPanelHead h2,.adminPanelHead h3{font-size:15px;line-height:1.3}
+ .adminPanelHead p{font-size:11px}
+ .adminTextBtn{min-height:42px;padding:9px 11px}
+ .adminSearch{width:100%;max-width:none;min-height:46px;font-size:16px;margin-bottom:12px}
+ .adminSection,.adminPanel>div[id]{overflow:visible}
+ .adminTable{display:block;width:100%;min-width:0;border-collapse:separate;border-spacing:0}
+ .adminTable thead{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+ .adminTable tbody{display:grid;gap:10px}
+ .adminTable tr{display:grid;grid-template-columns:minmax(0,1fr);background:#fff;border:1px solid #e2eaf5;border-radius:14px;overflow:hidden;box-shadow:0 4px 12px #071b4509}
+ .adminTable td{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-bottom:1px solid #edf1f6;min-width:0;font-size:12px;line-height:1.45}
+ .adminTable td:before{content:attr(data-label);flex:0 0 34%;max-width:34%;color:#718096;font-size:9px;font-weight:900;letter-spacing:.045em;line-height:1.45;text-transform:uppercase}
+ .adminTable td:last-child{display:flex;flex-wrap:wrap;align-items:center}
+ .adminTable td:last-child:before{flex:0 0 100%;max-width:100%;margin-bottom:2px}
+ .adminTable td:last-child>button{flex:1 1 calc(50% - 4px);min-height:42px;margin:0;padding:8px 7px;font-size:10px}
+ .adminTable td:last-child>select{flex:1 1 120px;width:auto;min-width:0;min-height:42px;font-size:12px}
+ .adminStatus{font-size:9px}
+ .adminEmpty{padding:18px 12px;font-size:12px}
+}
+
 </style></head><body>
 <header><div class="wrap nav"><div class="brand"><img src="./assets/tija-logo.jpg" alt="TIJA Multi Service"><div>TIJA MULTI SERVICE<small>HUDUMA ZA MTANDAONI</small></div></div><div class="navActions"><button class="soft" id="loginBtn">Ingia</button><button class="primary" id="registerBtn">Jisajili</button></div></div></header>
 <main id="publicView">
@@ -147,7 +232,7 @@ async function loadAdmin(){
  $("adminTopupsCount").textContent=data[2]?pending.length:"—";
  $("adminLedgerCount").textContent=data[3]?data[3].size:"—";
  if(errors.length){$("adminLoadError").textContent="Baadhi ya taarifa hazijapatikana: "+errors.join(" | ");$("adminLoadError").classList.remove("hidden");}
- const table=(headers,rows)=>rows.length?'<div class="adminSection"><table class="adminTable"><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join("")+'</tr></thead><tbody>'+rows.join("")+'</tbody></table></div>':'<div class="adminEmpty">Hakuna taarifa za kuonyesha kwa sasa.</div>';
+ const table=(headers,rows)=>{if(!rows.length)return'<div class="adminEmpty">Hakuna taarifa za kuonyesha kwa sasa.</div>';const labelledRows=rows.map(row=>{let index=0;return row.replace(/<td(?=[\s>])/g,()=>'<td data-label="'+(headers[index++]||"")+'">');});return'<div class="adminSection"><table class="adminTable"><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join("")+'</tr></thead><tbody>'+labelledRows.join("")+'</tbody></table></div>';};
  if(data[0]){
   const userRows=data[0].docs.map(d=>{const x=d.data();return '<tr data-user-row><td><b>'+((x.fullName||x.firstName||"Mteja"))+'</b><br><span style="color:#8491a4">'+(x.phone||"—")+'</span></td><td><span class="adminStatus">'+(x.status||"ACTIVE")+'</span></td><td><b>'+Number(x.tokenBalance||0)+'</b></td><td><button class="soft adminAction" data-admin-action="credit" data-uid="'+d.id+'">Ongeza tokeni</button><button class="soft adminAction" data-admin-action="toggle" data-uid="'+d.id+'" data-status="'+(x.status||"ACTIVE")+'">'+(x.status==="BLOCKED"?"Fungua":"Zuia")+'</button></td></tr>';});
   const html=table(["Jina / simu","Hali","Tokeni","Vitendo"],userRows);
